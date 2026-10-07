@@ -37,7 +37,7 @@
     good: { label: "سالم", icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.8"/></svg>' },
   };
   const PAGES = [
-    { id: "overview", title: "نمای کلی", lede: "هفت مشکل که داده‌های ۳۶ ماه گذشته نشان می‌دهند، اثر مالی هر کدام، و اقدامی که پیشنهاد می‌شود. هر عدد به نمودار و کوئری پشتش وصل است." },
+    { id: "overview", title: "نمای کلی", lede: "هفت مشکل در دادهٔ ۳۶ ماه، با اثر مالی و اقدام پیشنهادی هر کدام." },
     { id: "cash", title: "نقدینگی و منابع", lede: "پول گروه کجاست، کجا بیکار مانده و کجا با بهرهٔ پنهان خرید نسیه جبران شده است." },
     { id: "projects", title: "پروژه‌ها", lede: "وضعیت زمان و هزینهٔ ۶۰ پروژه، و این‌که سود برنامه‌ریزی‌شده کجا از دست رفته است." },
     { id: "supply", title: "تأمین و بهای تمام‌شده", lede: "قیمت خرید در برابر بازار، کانال خرید و عملکرد تحویل تأمین‌کنندگان." },
@@ -224,7 +224,7 @@
         <div>
           <p class="hero-eyebrow">اثر برآوردی هفت اقدام پیشنهادی در ۱۲ ماه آینده</p>
           <div class="hero-number" id="hero-num"></div>
-          <p class="hero-text">این عدد از ${num(T.meta.total_rows)} ردیف دادهٔ ۳۶ ماه گذشته بیرون آمده است. ${num(top3.length)} مورد فوری است: ${top3.map((x) => x.title).join("؛ ")}.</p>
+          <div class="hero-meta"><span class="chip">${num(T.meta.total_rows / 1e6, 2)} میلیون ردیف داده</span><span class="chip">۳۶ ماه</span><span class="pill critical">${SEV.critical.icon}${num(top3.length)} مورد فوری</span></div>
           <div class="hero-actions no-print">
             <a class="btn primary" href="#/decide">اتاق تصمیم</a>
             <button class="btn" type="button" id="method-btn">روش محاسبه</button>
@@ -253,7 +253,7 @@
       requestAnimationFrame(() => C.spark($(".kpi-spark", c), t.spark, t.color));
     });
 
-    g.appendChild(h("div", { class: "section-title" }, `<h2>هفت یافته، به ترتیب اثر</h2><p>هر کارت به نمودار شاهد و کوئری SQL خودش وصل است</p>`));
+    g.appendChild(h("div", { class: "section-title" }, `<h2>هفت یافته، به ترتیب اثر</h2><p>هر کارت با نمودار شاهد و کوئری SQL</p>`));
     const list = h("div", { class: "insights" });
     g.appendChild(list);
     INS.list.forEach((x, i) => list.appendChild(insightCard(x, i)));
@@ -261,6 +261,8 @@
 
   function insightCard(x, i) {
     const c = h("article", { class: "card insight", id: "insight-" + x.id });
+    const mini = miniSpec(x);
+    const shortAction = x.action.split(/[.:]/)[0];
     c.innerHTML = `
       <div class="insight-top">
         <span class="rank">${num(i + 1)}</span>${pill(x.severity)}
@@ -268,18 +270,108 @@
       </div>
       <div class="share-bar" aria-hidden="true"><i style="width:${Math.max(3, x.share * 100)}%"></i></div>
       <h3>${x.title}</h3>
-      <p class="clamp">${x.finding}</p>
-      <div class="action"><b>اقدام پیشنهادی</b>${x.action}</div>
+      <div class="mini-head"><span>${mini.cap}</span>${mini.legend && mini.legend.length ? `<ul class="legend">${mini.legend.map((l) => `<li><i class="${l.type || ""}" style="background:var(${l.color})"></i>${l.name}</li>`).join("")}</ul>` : ""}</div>
+      <div class="chart mini"></div>
+      <div class="action"><b>اقدام</b><span class="txt">${shortAction}</span></div>
+      <div class="detail">
+        <p>${x.finding}</p>
+        <p><b>پیشنهاد کامل:</b> ${x.action}</p>
+        <p class="meta">مسئول: ${x.owner} · شاخص پیگیری: ${x.kpi}</p>
+      </div>
       <div class="insight-foot">
-        <span class="owner">مسئول: ${x.owner}</span>
-        <button class="btn more" type="button">بیشتر</button>
+        <button class="btn more" type="button" aria-expanded="false">جزئیات</button>
         <button class="btn" type="button" data-go="${x.page}" data-anchor="${x.anchor}">شواهد</button>
         <button class="btn" type="button" data-sql="${x.mart}">SQL</button>
       </div>`;
-    $(".more", c).addEventListener("click", (e) => { c.classList.toggle("open"); e.target.textContent = c.classList.contains("open") ? "کمتر" : "بیشتر"; });
+    $(".more", c).addEventListener("click", (e) => {
+      const open = c.classList.toggle("open");
+      e.target.textContent = open ? "بستن" : "جزئیات";
+      e.target.setAttribute("aria-expanded", String(open));
+    });
     $("[data-go]", c).addEventListener("click", () => goEvidence(x.page, x.anchor));
     $("[data-sql]", c).addEventListener("click", () => openSql(x.mart));
+    mount($(".mini", c), mini.render);
     return c;
+  }
+
+  // draw once the card is laid out, then redraw on width change
+  function mount(el, fn) {
+    requestAnimationFrame(() => {
+      fn(el);
+      if (ro) { el.dataset.w = Math.round(el.clientWidth); registry.set(el, fn); ro.observe(el); }
+    });
+  }
+
+  // one small evidence chart per finding, always over the full 36 months
+  const yearTick = (p) => (p % 100 === 1 ? num(yearOf(p)).replace(/٬/g, "") : null);
+  function miniSpec(x) {
+    const ps = allPeriods();
+    const n = x.numbers;
+    const lineCfg = (series, extra) => Object.assign({ x: ps, xTick: yearTick, xTip: periodLabel, height: 140, ticks: 3, series }, extra);
+    switch (x.id) {
+      case "S3": {
+        const r = T.projects.find((p) => p.code === "MSK-01");
+        const b = M.projectBridge(r);
+        return {
+          cap: "پل سود برج سپهر · میلیارد تومان",
+          legend: [{ name: "کاهش", color: "--c2" }, { name: "جمع", color: "--total" }],
+          render: (el) => C.waterfall(el, { fmt: fm, height: 170, steps: [
+            { label: "برنامه", value: b.plan, total: true }, { label: "قیمت", value: b.price },
+            { label: "تورم", value: b.inflation }, { label: "بهره‌وری", value: b.efficiency },
+            { label: "پیش‌بینی", value: b.forecast, total: true }] }),
+        };
+      }
+      case "S7": {
+        const s = (src) => ps.map((p) => { const r = T.concrete_otif_monthly.find((q) => q.period === p && q.source === src); return r ? r.otif / r.orders : null; });
+        return {
+          cap: "تحویل کامل و به‌موقع بتن",
+          legend: [{ name: "آبان‌سازه", color: "--c2", type: "line" }, { name: "سایر", color: "--c4", type: "line" }],
+          render: (el) => C.line(el, lineCfg([{ name: "آبان‌سازه", color: "--c2", values: s("flagged") }, { name: "سایر تأمین‌کنندگان", color: "--c4", values: s("others") }], { yMin: 0.4, yMax: 1, yFmt: (t) => pct(t) })),
+        };
+      }
+      case "S6":
+        return {
+          cap: "نقد بیکار گروه، میانگین ماه",
+          render: (el) => C.line(el, lineCfg([{ name: "نقد بیکار", color: "--c4", area: true, values: seriesAll(T.cash_monthly, (r) => r.avg_idle) }], { yFmt: axisMoney, tipFmt: fm })),
+        };
+      case "S1": {
+        const rate = (idx) => ps.map((p) => { const rr = T.installments_monthly.filter((r) => r.period === p && r.is_indexed === idx); const k = sum(rr, (r) => r.installments); return k > 20 ? sum(rr, (r) => r.late30_count) / k : null; });
+        return {
+          cap: "اقساط با تأخیر بالای ۳۰ روز",
+          legend: [{ name: "قیمت ثابت", color: "--c2", type: "line" }, { name: "شاخص‌دار", color: "--c1", type: "line" }],
+          render: (el) => C.line(el, lineCfg([{ name: "قیمت ثابت", color: "--c2", values: rate(0) }, { name: "شاخص‌دار", color: "--c1", values: rate(1) }], { yMin: 0, yFmt: (t) => pct(t) })),
+        };
+      }
+      case "S5": {
+        const rows = Object.values(by(T.opportunity_funnel.filter((r) => r.j_year === M.LAST_YEAR), (r) => r.stage_no)).sort((a, b) => a[0].stage_no - b[0].stage_no);
+        return {
+          cap: "قیف فرصت‌های ۱۴۰۴",
+          legend: [{ name: "سالم", color: "--c1" }, { name: "با ایراد روز اول", color: "--c2" }],
+          render: (el) => C.hbars(el, { stacked: true, barH: 12, rowGap: 9, labelW: 120, fmt: fa,
+            rows: rows.map((rr) => ({ label: rr[0].stage_fa, values: [sum(rr.filter((r) => !r.has_intake_flag), (r) => r.entered), sum(rr.filter((r) => r.has_intake_flag), (r) => r.entered)] })),
+            series: [{ name: "سالم", color: "--c1" }, { name: "با ایراد روز اول", color: "--c2" }] }),
+        };
+      }
+      case "S2":
+        return {
+          cap: "قیمت آهن‌آلات نسبت به بازار، ۱۴۰۴",
+          render: (el) => C.bars(el, { cats: ["موردی عمران", "موردی بقیه", "قرارداد چارچوب"], series: [{ name: "فاصله از قیمت مرجع", color: "--c2", values: [n.premSpot, n.premOtherSpot, n.premFw] }], yFmt: (t) => pct(t), labels: true, labelFmt: (t) => pct(t, 1), height: 150, ticks: 3 }),
+        };
+      case "S4": {
+        const late = (type) => ps.map((p) => { const rr = T.einvoice_lag.filter((r) => r.period === p && r.invoice_type_fa === type); const k = sum(rr, (r) => r.invoices); return k ? sum(rr, (r) => r.late_count) / k : null; });
+        return {
+          cap: "صورتحساب‌های دیرثبت‌شده",
+          legend: [{ name: "اجاره و شارژ", color: "--c2", type: "line" }, { name: "فروش بتن", color: "--c3", type: "line" }],
+          render: (el) => C.line(el, lineCfg([{ name: "اجاره و شارژ", color: "--c2", values: late("اجاره و شارژ") }, { name: "فروش بتن", color: "--c3", values: late("فروش بتن") }], { yMin: 0, yMax: 1, yFmt: (t) => pct(t) })),
+        };
+      }
+    }
+    return { cap: "", render: () => {} };
+  }
+  function seriesAll(rows, valueFn) {
+    const m = new Map(allPeriods().map((p) => [p, 0]));
+    rows.forEach((r) => { if (m.has(r.period)) m.set(r.period, m.get(r.period) + valueFn(r)); });
+    return [...m.values()];
   }
 
   function goEvidence(page, anchor) {
