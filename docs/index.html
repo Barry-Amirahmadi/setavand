@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>بستهٔ تحلیل کسب‌وکار ستاوند</title>
+  <meta name="description" content="سند نیازمندی، نقشهٔ ذی‌نفعان، داستان‌های کاربری، فرایند مطلوب، فرهنگ شاخص‌ها و ماتریس ردیابی داشبورد مدیرعامل ستاوند. همهٔ داده‌ها ساختگی‌اند.">
+  <link rel="icon" href="../assets/img/mark.svg" type="image/svg+xml">
+  <link rel="preload" href="../assets/fonts/Vazirmatn.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../assets/css/app.css">
+  <script>
+    try { var t = localStorage.getItem("setavand-theme"); if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+  </script>
+  <style>
+    .doc { max-width: 1080px; margin: 0 auto; padding: 32px 20px 64px; }
+    .doc-top { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+    .doc-top .brand-mark { width: 40px; height: 40px; flex: none; }
+    .doc-top h1 { margin: 0; font-size: clamp(24px, 4vw, 34px); font-weight: 800; line-height: 1.4; }
+    .doc-top p { margin: 0; color: var(--ink-3); font-size: 14px; }
+    .doc-top .btn { margin-inline-start: auto; }
+    .toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 28px; padding: 0; list-style: none; }
+    .toc a { display: inline-block; padding: 6px 14px; border-radius: 999px; background: var(--card); box-shadow: var(--shadow); color: var(--ink-2); font-size: 13.5px; font-weight: 600; }
+    .toc a:hover { color: var(--accent-ink); }
+    .doc section { margin: 0 0 22px; scroll-margin-top: 20px; }
+    .doc h2 { margin: 0 0 4px; font-size: 22px; font-weight: 800; line-height: 1.5; }
+    .doc h2 + .sub { margin: 0 0 18px; color: var(--ink-3); font-size: 14px; }
+    .doc h3 { margin: 18px 0 6px; font-size: 16px; font-weight: 800; }
+    .doc p, .doc li { color: var(--ink-2); }
+    .doc ul, .doc ol { padding-inline-start: 22px; margin: 6px 0; }
+    .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .brd dt { font-weight: 800; color: var(--ink); margin-top: 12px; }
+    .brd dd { margin: 2px 0 0; color: var(--ink-2); }
+    .grid2x2 { display: grid; grid-template-columns: 34px repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, auto) 30px; gap: 10px; }
+    .quad { background: var(--card-2); border-radius: 16px; padding: 14px 16px; min-height: 150px; }
+    .quad b { display: block; font-size: 13px; color: var(--ink-3); margin-bottom: 6px; }
+    .quad ul { margin: 0; padding-inline-start: 18px; font-size: 14px; }
+    .quad.key { background: var(--accent-soft); }
+    .axis-y { grid-row: 1 / span 2; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; color: var(--ink-3); font-size: 12.5px; font-weight: 700; }
+    .axis-x { grid-column: 2 / span 2; text-align: center; color: var(--ink-3); font-size: 12.5px; font-weight: 700; }
+    .story { border-top: 1px solid var(--hair); padding: 14px 0 10px; }
+    .story:first-of-type { border-top: 0; padding-top: 4px; }
+    .story-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .story-head b { font-size: 15px; }
+    .story p { margin: 2px 0 6px; }
+    .story ul { font-size: 14px; margin: 0; }
+    .tag { font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: var(--sunken); color: var(--ink-2); }
+    .tag.must { background: var(--accent-soft); color: var(--accent-ink); }
+    .bpmn-wrap { overflow-x: auto; margin: 0 -8px; padding: 0 8px; }
+    .bpmn { width: 100%; min-width: 860px; height: auto; display: block; direction: ltr; }
+    .bpmn text { font-family: inherit; fill: var(--ink); font-size: 13px; }
+    .bpmn .lane { fill: var(--card); stroke: var(--hair-strong); }
+    .bpmn .lane-h { fill: var(--card-2); stroke: var(--hair-strong); }
+    .bpmn .lane-t { font-weight: 800; font-size: 13.5px; }
+    .bpmn .task { fill: var(--card); stroke: var(--c1); stroke-width: 1.6; }
+    .bpmn .task.new { fill: var(--accent-soft); }
+    .bpmn .gw { fill: var(--card); stroke: var(--c2); stroke-width: 1.6; }
+    .bpmn .ev { fill: var(--card); stroke: var(--ink-2); stroke-width: 1.6; }
+    .bpmn .ev.end { stroke-width: 4; }
+    .bpmn .flow { fill: none; stroke: var(--ink-2); stroke-width: 1.4; }
+    .bpmn .note { fill: none; stroke: var(--ink-3); stroke-dasharray: 4 3; }
+    .bpmn .small { font-size: 12px; fill: var(--ink-3); }
+    .bpmn .lab { font-size: 12px; font-weight: 700; fill: var(--ink-2); }
+    .kpi-table td { white-space: normal; vertical-align: top; line-height: 1.8; min-width: 120px; }
+    .kpi-table td:first-child { font-weight: 700; min-width: 150px; }
+    .kpi-table code, .trace code { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 11.5px; direction: ltr; unicode-bidi: isolate; background: var(--sunken); padding: 1px 6px; border-radius: 6px; white-space: nowrap; }
+    .trace td { white-space: normal; vertical-align: top; }
+    .model { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .model .box { background: var(--card-2); border-radius: 14px; padding: 12px 14px; }
+    .model .box b { display: block; font-size: 13px; color: var(--ink-3); margin-bottom: 4px; }
+    .model .box ul { list-style: none; margin: 0; padding: 0; font-size: 13.5px; }
+    .model .box li { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--hair); padding: 3px 0; }
+    .model .box li:last-child { border-bottom: 0; }
+    .model .box code { font-family: ui-monospace, Consolas, monospace; font-size: 11.5px; direction: ltr; }
+    .model .box span { font-variant-numeric: tabular-nums; color: var(--ink-3); }
+    .note-line { font-size: 13.5px; color: var(--ink-3); }
+    @media (max-width: 760px) {
+      .two, .model { grid-template-columns: minmax(0, 1fr); }
+      .doc { padding: 20px 16px 48px; }
+      .doc-top { flex-wrap: wrap; }
+      .doc-top .btn { margin-inline-start: 0; }
+    }
+    @media print { .toc, .doc-top .btn { display: none; } .card { box-shadow: none; border: 1px solid #ddd; } }
+  </style>
+</head>
+<body>
+<main class="doc">
+  <header class="doc-top">
+    <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="bm" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#0071e3"/><stop offset=".6" stop-color="#5e5ce6"/><stop offset="1" stop-color="#b051d6"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#bm)"/><rect x="9" y="20" width="6" height="11" rx="2" fill="#fff" opacity=".7"/><rect x="17" y="14" width="6" height="17" rx="2" fill="#fff" opacity=".85"/><rect x="25" y="8" width="6" height="23" rx="2" fill="#fff"/></svg>
+    <div>
+      <h1>بستهٔ تحلیل کسب‌وکار</h1>
+      <p>داشبورد مدیرعامل گروه ستاوند · نسخهٔ ۱ · مهر ۱۴۰۵ · همهٔ نام‌ها و اعداد ساختگی‌اند</p>
+    </div>
+    <a class="btn primary" href="../">بازگشت به داشبورد</a>
+  </header>
+
+  <ul class="toc">
+    <li><a href="#brd">سند نیازمندی</a></li>
+    <li><a href="#stakeholders">ذی‌نفعان</a></li>
+    <li><a href="#stories">داستان‌های کاربری</a></li>
+    <li><a href="#bpmn">فرایند مطلوب</a></li>
+    <li><a href="#kpis">فرهنگ شاخص‌ها</a></li>
+    <li><a href="#trace">ماتریس ردیابی</a></li>
+    <li><a href="#data">مدل داده</a></li>
+    <li><a href="#method">روش و محدودیت‌ها</a></li>
+  </ul>
+
+  <!-- 1. BRD -->
+  <section id="brd" class="card">
+    <h2>سند نیازمندی کسب‌وکار، یک‌صفحه‌ای</h2>
+    <p class="sub">چرا این داشبورد ساخته شد و چه چیزی را باید ممکن کند</p>
+    <div class="two">
+      <dl class="brd">
+        <dt>مسئله</dt>
+        <dd>مدیرعامل گروهی با هفت شرکت و شصت پروژه، گزارش هر شرکت را جدا و با تأخیر می‌گیرد. هیچ دیدی نقد، فروش، تأمین، پروژه و سرمایه‌گذاری را کنار هم نمی‌گذارد. در نتیجه مشکل‌هایی که میان شرکت‌ها رخ می‌دهند دیده نمی‌شوند؛ مثلاً ستاد پول بیکار نگه می‌دارد و هم‌زمان شرکت‌های تابعه با بهرهٔ پنهان نسیه می‌خرند.</dd>
+        <dt>هدف کسب‌وکار</dt>
+        <dd>هر ماه، اقدام‌هایی که بیشترین اثر مالی را دارند شناسایی، قیمت‌گذاری و به یک مسئول سپرده شوند، و تصمیم هیئت‌مدیره بر پایهٔ شواهد قابل ردیابی گرفته شود.</dd>
+        <dt>معیارهای موفقیت</dt>
+        <dd><ul>
+          <li>مدیرعامل در کمتر از پنج دقیقه سه اقدام اول و اثر هر کدام را بگوید.</li>
+          <li>هر عدد روی صفحه تا یک کوئری SQL و یک جدول منبع قابل ردیابی باشد.</li>
+          <li>هر یافته اقدام، مسئول، شاخص پیگیری و اثر برآوردی ۱۲ ماهه داشته باشد.</li>
+          <li>یادداشت تصمیم هیئت‌مدیره بدون کار دستی، از همان داده ساخته شود.</li>
+        </ul></dd>
+      </dl>
+      <dl class="brd">
+        <dt>دامنه</dt>
+        <dd>هفت شرکت گروه، ۳۶ ماه از فروردین ۱۴۰۲ تا اسفند ۱۴۰۴، شش حوزه: نقدینگی، پروژه، تأمین، فرصت‌های سرمایه‌گذاری، وصول اقساط و انطباق مالیاتی.</dd>
+        <dt>خارج از دامنه</dt>
+        <dd>صورت‌های مالی حسابرسی‌شده، منابع انسانی، پیش‌بینی آماری قیمت، و اتصال زنده به سامانه‌های عملیاتی. این نسخه روی دادهٔ ساختگی و ایستا ساخته شده است.</dd>
+        <dt>کاربر اصلی</dt>
+        <dd>مدیرعامل و سهامدار اصلی گروه. هیئت‌مدیره خوانندهٔ یادداشت تصمیم است.</dd>
+        <dt>فرض‌ها</dt>
+        <dd>نرخ جریمهٔ دیرکرد ۱۸٪ سالانه، بهرهٔ پنهان خرید نسیه ۳٫۵٪ ماهانه، ظرفیت کارخانهٔ بتن ۳۷ هزار مترمکعب در ماه. همهٔ اثرهای برآوردی به فرض‌های صریح اتاق تصمیم وابسته‌اند و قابل تغییرند.</dd>
+        <dt>محدودیت‌ها</dt>
+        <dd>داده ساختگی است؛ اعداد برای نمایش روش‌اند، نه توصیف هیچ شرکت واقعی. اثرها برای اولویت‌بندی‌اند، نه بودجه.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- 2. stakeholders -->
+  <section id="stakeholders" class="card">
+    <h2>نقشهٔ ذی‌نفعان</h2>
+    <p class="sub">قدرت تصمیم در برابر میزان درگیری با نتیجه، و راهبرد تعامل با هر گروه</p>
+    <div class="grid2x2">
+      <div class="axis-y">قدرت تصمیم ←</div>
+      <div class="quad"><b>راضی نگه داشتن · قدرت بالا، درگیری کم</b><ul><li>هیئت‌مدیره: یادداشت تصمیم ماهانه، بدون جزئیات فنی</li><li>حسابرس و مشاور مالیاتی: تأیید فرض جریمهٔ سامانهٔ مودیان</li></ul></div>
+      <div class="quad key"><b>مدیریت نزدیک · قدرت بالا، درگیری بالا</b><ul><li>مدیرعامل و سهامدار اصلی: کاربر اصلی، تأیید اولویت‌ها</li><li>مدیر مالی گروه و خزانه‌دار: صاحب یافتهٔ نقد بیکار</li><li>مدیران عامل شرکت‌های تابعه: صاحبان اقدام‌ها</li></ul></div>
+      <div class="quad"><b>پایش · قدرت کم، درگیری کم</b><ul><li>تأمین‌کنندگان: اثر تغییر سیاست خرید</li><li>خریداران پیش‌فروش: اثر جریمهٔ شاخص‌دار، اطلاع‌رسانی شفاف</li></ul></div>
+      <div class="quad"><b>مطلع نگه داشتن · قدرت کم، درگیری بالا</b><ul><li>کنترل پروژه: ورودی پیشرفت و هزینه</li><li>تأمین و خرید: قیمت مرجع و کانال خرید</li><li>کمیتهٔ سرمایه‌گذاری و تحلیلگران: فرایند غربال جدید</li><li>فروش و وصول، واحد مالیات، فناوری اطلاعات</li></ul></div>
+      <div></div>
+      <div class="axis-x">← میزان درگیری با نتیجه</div>
+    </div>
+  </section>
+
+  <!-- 3. stories -->
+  <section id="stories" class="card">
+    <h2>ده داستان کاربری</h2>
+    <p class="sub">همه از نگاه یک کاربر: مدیرعامل و سهامدار اصلی. اولویت با روش MoSCoW؛ معیار پذیرش هر داستان در داشبورد آزموده شده است.</p>
+    <div id="story-list"></div>
+  </section>
+
+  <!-- 4. BPMN -->
+  <section id="bpmn" class="card">
+    <h2>فرایند مطلوب: غربال و تصمیم فرصت سرمایه‌گذاری</h2>
+    <p class="sub">پاسخ به یافتهٔ «فرصت‌ها دیر غربال می‌شوند». در وضعیت فعلی هر فرصت، حتی با ایراد روشن، از همهٔ مراحل می‌گذرد و تصمیم برای فرصت‌های سالم به‌طور میانگین ۳۸ روز طول می‌کشد.</p>
+    <div class="bpmn-wrap">
+      <svg class="bpmn" viewBox="0 0 1100 600" role="img" aria-label="نمودار فرایند مطلوب غربال فرصت سرمایه‌گذاری با چهار مسیر">
+        <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" style="fill:var(--ink-2)"/></marker></defs>
+        <!-- lanes -->
+        <rect class="lane" x="10" y="10" width="1080" height="130"/><rect class="lane-h" x="950" y="10" width="140" height="130"/>
+        <rect class="lane" x="10" y="140" width="1080" height="130"/><rect class="lane-h" x="950" y="140" width="140" height="130"/>
+        <rect class="lane" x="10" y="270" width="1080" height="180"/><rect class="lane-h" x="950" y="270" width="140" height="180"/>
+        <rect class="lane" x="10" y="450" width="1080" height="140"/><rect class="lane-h" x="950" y="450" width="140" height="140"/>
+        <text class="lane-t" x="1020" y="70" text-anchor="middle" direction="rtl">دبیرخانهٔ</text><text class="lane-t" x="1020" y="90" text-anchor="middle" direction="rtl">سرمایه‌گذاری</text>
+        <text class="lane-t" x="1020" y="200" text-anchor="middle" direction="rtl">سامانهٔ</text><text class="lane-t" x="1020" y="220" text-anchor="middle" direction="rtl">امتیازدهی</text>
+        <text class="lane-t" x="1020" y="355" text-anchor="middle" direction="rtl">تحلیلگر</text><text class="lane-t" x="1020" y="375" text-anchor="middle" direction="rtl">سرمایه‌گذاری</text>
+        <text class="lane-t" x="1020" y="515" text-anchor="middle" direction="rtl">کمیتهٔ</text><text class="lane-t" x="1020" y="535" text-anchor="middle" direction="rtl">سرمایه‌گذاری</text>
+        <!-- start -->
+        <circle class="ev" cx="905" cy="65" r="16"/>
+        <text class="small" x="905" y="104" text-anchor="middle" direction="rtl">فرصت دریافت شد</text>
+        <path class="flow" d="M889,65H862" marker-end="url(#arr)"/>
+        <!-- T1 -->
+        <rect class="task" x="730" y="37" width="130" height="56" rx="10"/>
+        <text x="795" y="61" text-anchor="middle" direction="rtl">ثبت فرم استاندارد</text><text x="795" y="80" text-anchor="middle" direction="rtl">و مدارک پایه</text>
+        <path class="flow" d="M795,93V176" marker-end="url(#arr)"/>
+        <!-- T2 -->
+        <rect class="task new" x="730" y="178" width="130" height="56" rx="10"/>
+        <text x="795" y="202" text-anchor="middle" direction="rtl">امتیاز خودکار</text><text x="795" y="221" text-anchor="middle" direction="rtl">شش معیار، روز اول</text>
+        <path class="flow" d="M730,206H674" marker-end="url(#arr)"/>
+        <!-- G1 -->
+        <path class="gw" d="M650,182L674,206L650,230L626,206z"/>
+        <text x="650" y="211" text-anchor="middle" font-weight="800" style="fill:var(--c2)">×</text>
+        <text class="small" x="650" y="252" text-anchor="middle" direction="rtl">ایراد قطعی دارد؟</text>
+        <path class="flow" d="M650,182V95" marker-end="url(#arr)"/><text class="lab" x="660" y="150" direction="rtl" text-anchor="end">بله</text>
+        <!-- T3 reject -->
+        <rect class="task new" x="585" y="37" width="130" height="56" rx="10"/>
+        <text x="650" y="61" text-anchor="middle" direction="rtl">رد با دلیل ثبت‌شده</text><text x="650" y="80" text-anchor="middle" direction="rtl">ظرف دو روز کاری</text>
+        <path class="flow" d="M585,65H528" marker-end="url(#arr)"/>
+        <circle class="ev end" cx="510" cy="65" r="16"/>
+        <text class="small" x="510" y="104" text-anchor="middle" direction="rtl">رد شد</text>
+        <!-- G1 no -> G2 -->
+        <path class="flow" d="M626,206H534" marker-end="url(#arr)"/><text class="lab" x="585" y="198" text-anchor="middle" direction="rtl">خیر</text>
+        <path class="gw" d="M510,182L534,206L510,230L486,206z"/>
+        <text x="510" y="211" text-anchor="middle" font-weight="800" style="fill:var(--c2)">×</text>
+        <text class="small" x="510" y="160" text-anchor="middle" direction="rtl">امتیاز بالای آستانه؟</text>
+        <!-- G2 branches -->
+        <path class="flow" d="M510,230V318H432" marker-end="url(#arr)"/><text class="lab" x="520" y="300" direction="rtl" text-anchor="end">بله · مسیر سریع</text>
+        <path class="flow" d="M486,206H460V405H432" marker-end="url(#arr)"/><text class="lab" x="452" y="392" direction="rtl" text-anchor="start">خیر</text>
+        <!-- fast / standard tasks -->
+        <rect class="task new" x="300" y="292" width="130" height="54" rx="10"/>
+        <text x="365" y="315" text-anchor="middle" direction="rtl">بازدید و ارزیابی مالی</text><text x="365" y="334" text-anchor="middle" direction="rtl">هم‌زمان، ۱۰ روز</text>
+        <circle class="ev" cx="420" cy="346" r="9"/><path d="M420,341V346L424,349" style="fill:none;stroke:var(--ink-2);stroke-width:1.4"/>
+        <text class="small" x="440" y="365" direction="rtl" text-anchor="end">هشدار روز دهم</text>
+        <rect class="task" x="300" y="378" width="130" height="54" rx="10"/>
+        <text x="365" y="401" text-anchor="middle" direction="rtl">ارزیابی استاندارد</text><text x="365" y="420" text-anchor="middle" direction="rtl">مرحله به مرحله</text>
+        <path class="flow" d="M300,318H215V490" marker-end="url(#arr)"/>
+        <path class="flow" d="M300,405H215"/>
+        <!-- committee -->
+        <rect class="task" x="150" y="492" width="130" height="56" rx="10"/>
+        <text x="215" y="516" text-anchor="middle" direction="rtl">تصمیم کمیته</text><text x="215" y="535" text-anchor="middle" direction="rtl">جلسهٔ هفتگی</text>
+        <path class="flow" d="M150,520H88" marker-end="url(#arr)"/>
+        <circle class="ev end" cx="70" cy="520" r="16"/>
+        <text class="small" x="70" y="560" text-anchor="middle" direction="rtl">تصمیم ثبت شد</text>
+        <!-- annotation -->
+        <rect class="note" x="560" y="470" width="350" height="96" rx="6"/>
+        <text class="small" x="895" y="496" direction="rtl" text-anchor="start">کادرهای رنگی گام‌های تازه‌اند.</text>
+        <text class="small" x="895" y="520" direction="rtl" text-anchor="start">هدف: رد فرصت معیوب ظرف دو روز، و تصمیم</text>
+        <text class="small" x="895" y="544" direction="rtl" text-anchor="start">دربارهٔ فرصت سالم مسیر سریع ظرف ۱۴ روز.</text>
+      </svg>
+    </div>
+    <div class="two" style="margin-top:14px">
+      <div>
+        <h3>تغییر نسبت به وضعیت فعلی</h3>
+        <ul>
+          <li>غربال با امتیاز شش‌معیاره در روز اول، به جای کشف ایراد در بازدید یا ارزیابی مالی.</li>
+          <li>ردِ مستند ظرف دو روز؛ دلیل رد برای بهبود منبع فرصت‌ها ثبت می‌شود.</li>
+          <li>مسیر سریع: بازدید و ارزیابی مالی هم‌زمان، نه پشت سر هم.</li>
+          <li>کمیتهٔ هفتگی به جای ماهانه برای فرصت‌های مسیر سریع.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>شاخص‌های پیگیری</h3>
+        <ul>
+          <li>ساعت کارشناسی صرف فرصت‌های معیوب: هدف کاهش ۸۰٪.</li>
+          <li>روز تا تصمیم برای فرصت‌های سالم مسیر سریع: هدف ۱۴ روز.</li>
+          <li>فرصت سالم ازدست‌رفته به رقیب: پیگیری فصلی.</li>
+          <li>نرخ رد اشتباه: قراردادهای موفقی که قاعدهٔ جدید رد می‌کرد، هدف صفر.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. KPI dictionary -->
+  <section id="kpis" class="card">
+    <h2>فرهنگ شاخص‌ها</h2>
+    <p class="sub">تعریف، فرمول، منبع و هدف هر شاخص. هدف‌ها پیشنهادی‌اند و باید با مدیران تأیید شوند.</p>
+    <div class="table-wrap"><table class="data kpi-table" id="kpi-table"></table></div>
+  </section>
+
+  <!-- 6. trace -->
+  <section id="trace" class="card">
+    <h2>ماتریس ردیابی نیازمندی</h2>
+    <p class="sub">هر صفحه و نمودار به یک داستان کاربری و یک کوئری SQL وصل است. شناسهٔ نمودار همان شناسهٔ عنصر در صفحهٔ داشبورد است.</p>
+    <div class="table-wrap"><table class="data trace" id="trace-table"></table></div>
+  </section>
+
+  <!-- 7. data -->
+  <section id="data" class="card">
+    <h2>مدل داده</h2>
+    <p class="sub" id="data-sub">طرح ستاره‌ای در SQLite. ردیف‌ها از روی فایل دادهٔ داشبورد شمرده می‌شوند.</p>
+    <div class="model" id="model"></div>
+    <h3>کیفیت داده</h3>
+    <p>ردیف‌های نامعتبر حذف بی‌صدا نمی‌شوند. هر ردیف رد شده با دلیلش در جدول <code class="chip ltr">etl_rejected_row</code> ثبت است و هفت قاعدهٔ کنترلی در <code class="chip ltr">etl_check</code> اجرا می‌شوند: جمع گردش نقد با مانده‌ها، رسید کالا بعد از سفارش، تطبیق مبلغ قسط با قرارداد، تاریخ ثبت صورتحساب بعد از صدور، شناسهٔ معتبر تأمین‌کننده، مقدار مثبت سفارش و یکتایی کد سفارش. نتیجه در صفحهٔ ریسک و انطباق دیده می‌شود.</p>
+    <h3>بازسازی</h3>
+    <p class="note-line">داده با بذر ثابت ۱۴۰۴ تولید می‌شود، پس هر اجرا همان پایگاه داده را می‌سازد: <code class="chip ltr">python scripts/generate_data.py</code> سپس <code class="chip ltr">python scripts/build_dashboard_data.py</code></p>
+  </section>
+
+  <section id="method" class="card">
+    <h2>روش و محدودیت‌ها</h2>
+    <ul>
+      <li>همهٔ نام‌ها، شرکت‌ها، پروژه‌ها، تأمین‌کنندگان و اعداد ساختگی‌اند. هر شباهتی به یک سازمان واقعی تصادفی است.</li>
+      <li>هفت مشکل عمداً در داده کاشته شده‌اند تا روش کشف، اندازه‌گیری و پیشنهاد اقدام نمایش داده شود. داشبورد آن‌ها را فقط از روی داده پیدا می‌کند؛ هیچ عددی دستی وارد نشده است.</li>
+      <li>اثرهای برآوردی، تخمین مرتبهٔ بزرگی برای اولویت‌بندی‌اند. هر کدام یک فرض صریح دارد که در اتاق تصمیم قابل تغییر است.</li>
+      <li>این پروژه با کمک هوش مصنوعی پیاده‌سازی شده است. تعریف مسئله، داستان‌ها، شاخص‌ها، منطق تصمیم و بازبینی اعداد با طراح بوده است.</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  const fa = (v) => new Intl.NumberFormat("fa-IR").format(v);
+  const STORIES = [
+    { id: "US-01", pr: "Must", page: "نمای کلی", text: "می‌خواهم در یک نگاه ببینم بزرگ‌ترین مشکل‌های گروه کدام‌اند و هر کدام چقدر می‌ارزد، تا وقت جلسهٔ هیئت‌مدیره را به ترتیب اثر تقسیم کنم.",
+      ac: ["عدد اصلی برابر جمع اثر هفت یافته است.", "یافته‌ها به ترتیب اثر مرتب‌اند و هر کدام سطح فوریت با نماد و برچسب دارد.", "هر یافته اقدام، مسئول، شاخص پیگیری و پیوند به نمودار شاهد و SQL دارد."] },
+    { id: "US-02", pr: "Must", page: "نقدینگی", text: "می‌خواهم ببینم پول گروه کجا بیکار مانده و هم‌زمان کجا با بهرهٔ پنهان نسیه خریده‌ایم، تا خزانه‌داری را متمرکز کنم.",
+      ac: ["نقد بیکار ماهانه و به تفکیک شرکت نمایش داده می‌شود.", "بهرهٔ پنهان نسیه ماهانه و به تفکیک شرکت نمایش داده می‌شود.", "تزریق‌های ستاد با گیرنده و ماه دیده می‌شوند."] },
+    { id: "US-03", pr: "Must", page: "پروژه‌ها", text: "می‌خواهم بدانم سود کدام پروژه‌ها از برنامه فاصله گرفته و این فاصله از قیمت فروش آمده، از تورم یا از بهره‌وری.",
+      ac: ["پل سود هر پروژه چهار جزء دارد و جمعش برابر سود پیش‌بینی است.", "پروژه‌های زیان‌ده در پیش‌بینی با رنگ و برچسب جدا می‌شوند.", "انتخاب پروژه از ماتریس، نمودار حاشیه یا جدول کار می‌کند."] },
+    { id: "US-04", pr: "Should", page: "پروژه‌ها", text: "می‌خواهم پروژه‌های عقب از برنامه و پرهزینه را یکجا ببینم، تا جلسهٔ پیگیری را با آن‌ها شروع کنم.",
+      ac: ["ماتریس زمان‌بندی در برابر هزینه با خط مرجع یک.", "اندازهٔ هر دایره متناسب با بودجه است.", "منحنی پیشرفت برنامه و واقعی برای هر پروژه."] },
+    { id: "US-05", pr: "Should", page: "تأمین", text: "می‌خواهم بدانم قیمت خرید مصالح با بازار هم‌خوان است و کدام شرکت گران‌تر می‌خرد.",
+      ac: ["صرف قیمت نسبت به مرجع به تفکیک شرکت و کانال خرید.", "بهرهٔ نسیه از قیمت جدا شده است تا دوبار شمرده نشود.", "سهم خرید موردی در طول زمان."] },
+    { id: "US-06", pr: "Must", page: "تأمین", text: "می‌خواهم ریسک یک تأمین‌کنندهٔ کلیدی را پیش از آنکه پروژه‌ها را عقب بیندازد ببینم، همراه با جایگزین موجود.",
+      ac: ["تحویل کامل و به‌موقع ماهانه برای تأمین‌کنندهٔ پرریسک، کارخانهٔ گروه و بقیه.", "ظرفیت خالی کارخانهٔ گروه در برابر حجم تأمین‌کنندهٔ پرریسک.", "پروژه‌های وابسته در صفحهٔ پروژه‌ها مشخص‌اند."] },
+    { id: "US-07", pr: "Should", page: "فرصت‌ها", text: "می‌خواهم بدانم چرا فرصت‌های خوب سرمایه‌گذاری را به رقیب می‌بازیم و وقت تیم کجا هدر می‌رود.",
+      ac: ["قیف مراحل با تفکیک فرصت سالم و معیوب.", "ساعت کارشناسی به تفکیک مرحله.", "فهرست فرصت‌های ازدست‌رفته با امتیاز و روز تا تصمیم."] },
+    { id: "US-08", pr: "Must", page: "ریسک و انطباق", text: "می‌خواهم ریسک وصول اقساط پیش‌فروش و زیانی که تورم از دیرکرد می‌سازد را ببینم.",
+      ac: ["نرخ تأخیر بالای ۳۰ روز برای قرارداد قیمت ثابت و شاخص‌دار.", "تورم ماهانه در برابر جریمهٔ دیرکرد ماهانه.", "معوقات باز به تفکیک پروژه."] },
+    { id: "US-09", pr: "Could", page: "ریسک و انطباق", text: "می‌خواهم مطمئن شوم صورتحساب‌ها به‌موقع در سامانهٔ مودیان ثبت می‌شوند و بدانم ریسک جریمه کجاست.",
+      ac: ["توزیع فاصلهٔ صدور تا ثبت به تفکیک نوع صورتحساب و شرکت.", "سهم ثبت با تأخیر ماهانه.", "مهلت هفت روزه به‌عنوان مرز تأخیر."] },
+    { id: "US-10", pr: "Must", page: "اتاق تصمیم", text: "می‌خواهم فرض‌ها را تغییر دهم و یک یادداشت تصمیم قابل چاپ بگیرم که هر عددش به منبع وصل باشد.",
+      ac: ["تغییر هر اهرم، اثر کل و رتبه‌بندی را فوری به‌روز می‌کند.", "یادداشت شامل یافته، پیشنهاد، مسئول، شاخص، اثر و پیوند شواهد برای هر اقدام است.", "نسخهٔ چاپی بدون منو و اهرم‌ها چیده می‌شود."] },
+  ];
+  document.getElementById("story-list").innerHTML = STORIES.map((s) => `
+    <div class="story">
+      <div class="story-head"><b>${s.id}</b><span class="tag ${s.pr === "Must" ? "must" : ""}">${s.pr}</span><span class="tag">صفحهٔ ${s.page}</span></div>
+      <p>به‌عنوان مدیرعامل، ${s.text}</p>
+      <ul>${s.ac.map((a) => `<li>${a}</li>`).join("")}</ul>
+    </div>`).join("");
+
+  const KPIS = [
+    ["اثر برآوردی ۱۲ ماهه", "ارزش مالی هفت اقدام پیشنهادی در یک سال آینده", "جمع اثر هر یافته؛ هر اثر = عدد ۱۴۰۴ × فرض اتاق تصمیم", "assets/js/model.js", "—", "مدیرعامل", "ماهانه"],
+    ["موجودی نقد پایان ماه", "مانده‌ی حساب‌های هر شرکت در آخرین روز ماه", "مانده‌ی اول دوره + جمع گردش تا آن روز", "01_cash_monthly.sql", "بالای کف ۶۰ میلیارد برای هر شرکت", "خزانه‌دار گروه", "روزانه"],
+    ["نقد بیکار", "موجودی بیش از نیاز ۳۰ روزهٔ پرداخت‌ها", "موجودی − بیشینهٔ ۳۰ روز میانگین خروجی ۹۰ روز اخیر و ۲۰ میلیارد", "01_cash_monthly.sql", "زیر ۱۵٪ موجودی گروه", "خزانه‌دار گروه", "هفتگی"],
+    ["بهرهٔ پنهان خرید نسیه", "مبلغی که فروشنده بابت مهلت پرداخت به قیمت اضافه می‌کند", "مبلغ خرید نسیه × ۳٫۵٪ × ماه‌های مهلت", "01_cash_monthly.sql", "کاهش ۸۰٪", "مدیر مالی شرکت‌ها", "ماهانه"],
+    ["شاخص عملکرد زمان‌بندی", "کار انجام‌شده نسبت به کار برنامه‌ریزی‌شده تا امروز", "ارزش کسب‌شده ÷ ارزش برنامه‌ریزی‌شده، تجمعی", "03_projects.sql", "بالای ۰٫۹۵", "کنترل پروژه", "ماهانه"],
+    ["شاخص عملکرد هزینه", "ارزش کار انجام‌شده نسبت به هزینهٔ واقعی آن", "ارزش کسب‌شده ÷ هزینهٔ واقعی، تجمعی", "03_projects.sql", "بالای ۰٫۹۵", "کنترل پروژه", "ماهانه"],
+    ["حاشیهٔ سود پیش‌بینی", "سود پروژهٔ ساختمانی در پایان، با فروش و هزینهٔ امروز", "فروش قطعی + واحدهای مانده به قیمت امروز − زمین − برآورد هزینه در پایان، تقسیم بر درآمد", "03_projects.sql", "حداکثر ۵ واحد زیر برنامه", "مدیرعامل شرکت مسکن", "ماهانه"],
+    ["صرف قیمت خرید", "فاصلهٔ قیمت خرید نقدی از قیمت مرجع بازار", "مبلغ نقدی ÷ مقدار × قیمت مرجع همان ماه − ۱", "07_procurement_price.sql", "زیر ۲٪", "مدیر تأمین گروه", "ماهانه"],
+    ["سهم خرید موردی", "سهم مبلغ آهن‌آلاتی که بیرون از قرارداد چارچوب خریده شده", "خرید موردی ÷ کل خرید آهن‌آلات", "07_procurement_price.sql", "زیر ۳۰٪", "مدیر تأمین گروه", "ماهانه"],
+    ["تحویل کامل و به‌موقع", "سفارش‌هایی که سر موعد و با مقدار کامل رسیدند", "تعداد سفارش به‌موقع و کامل ÷ کل سفارش", "08_supplier_otif.sql · 11_concrete_otif_monthly.sql", "بالای ۹۰٪", "مدیر تأمین گروه", "هفتگی"],
+    ["ظرفیت خالی کارخانهٔ بتن", "حجمی که کارخانهٔ گروه هنوز می‌تواند تحویل دهد", "ظرفیت اسمی ماهانه − حجم ارسال‌شده", "09_plant_capacity.sql", "—", "مدیرعامل شرکت بتن", "ماهانه"],
+    ["نرخ تأخیر بالای ۳۰ روز", "سهم اقساط سررسیدشده که بیش از ۳۰ روز دیر پرداخت شده یا هنوز معوق‌اند", "تعداد اقساط دیرکرد بالای ۳۰ روز یا معوق ÷ کل اقساط سررسیدشده", "05_installments_monthly.sql", "زیر ۸٪", "مدیر فروش و وصول", "ماهانه"],
+    ["زیان تورمی اقساط", "ارزشی که در مدت دیرکرد به خاطر تورم از دست می‌رود", "مبلغ قسط × ماه‌های تأخیر × بیشینهٔ تورم ماهانه منهای جریمهٔ ماهانه و صفر", "05_installments_monthly.sql", "کاهش ۶۰٪", "مدیر فروش و وصول", "ماهانه"],
+    ["ثبت به‌موقع صورتحساب", "سهم صورتحساب‌هایی که ظرف هفت روز در سامانهٔ مودیان ثبت شدند", "۱ − صورتحساب با تأخیر بالای ۷ روز ÷ کل صورتحساب", "10_einvoice_lag.sql", "بالای ۹۸٪", "واحد مالیات", "هفتگی"],
+    ["روز تا تصمیم", "فاصلهٔ دریافت فرصت تا تصمیم نهایی", "میانگین روز از دریافت تا آخرین مرحله", "13_opportunities.sql", "۱۴ روز در مسیر سریع", "مدیر سرمایه‌گذاری", "ماهانه"],
+    ["ساعت کارشناسی هدررفته", "ساعت صرف فرصت‌هایی که از روز اول ایراد روشن داشتند", "جمع ساعت کارشناسی فرصت‌های معیوب بعد از غربال", "12_opportunity_funnel.sql", "کاهش ۸۰٪", "مدیر سرمایه‌گذاری", "فصلی"],
+    ["نرخ قبولی کیفیت داده", "سهم ردیف‌هایی که از قاعده‌های کنترلی عبور کردند", "۱ − ردیف ناموفق ÷ ردیف بررسی‌شده", "15_data_quality.sql", "بالای ۹۹٪", "فناوری اطلاعات و داده", "هر بار بارگذاری"],
+  ];
+  document.getElementById("kpi-table").innerHTML = "<thead><tr><th>شاخص</th><th>تعریف</th><th>فرمول</th><th>منبع</th><th>هدف پیشنهادی</th><th>مسئول</th><th>تناوب</th></tr></thead><tbody>" +
+    KPIS.map((k) => `<tr><td>${k[0]}</td><td>${k[1]}</td><td>${k[2]}</td><td>${k[3].split(" · ").map((x) => `<code>${x}</code>`).join(" ")}</td><td>${k[4]}</td><td>${k[5]}</td><td>${k[6]}</td></tr>`).join("") + "</tbody>";
+
+  const TRACE = [
+    ["R-01", "US-01", "نمای کلی", "hero · insight-S1…S7", "همهٔ کوئری‌ها، model.js", "همهٔ یافته‌ها"],
+    ["R-02", "US-02", "نقدینگی", "chart-balance · chart-idle · chart-premium · chart-injection", "01_cash_monthly.sql · 02_cash_by_category.sql", "S6"],
+    ["R-03", "US-03", "پروژه‌ها", "chart-bridge · chart-margin · chart-portfolio", "03_projects.sql · 16_presales_monthly.sql", "S3"],
+    ["R-04", "US-04", "پروژه‌ها", "chart-quadrant · chart-projects-table", "03_projects.sql · 04_project_month.sql", "S3 · S7"],
+    ["R-05", "US-05", "تأمین", "chart-steel · chart-spot", "07_procurement_price.sql", "S2"],
+    ["R-06", "US-06", "تأمین", "chart-otif · chart-plant · chart-suppliers", "11_concrete_otif_monthly.sql · 09_plant_capacity.sql · 08_supplier_otif.sql", "S7"],
+    ["R-07", "US-07", "فرصت‌ها", "chart-funnel · chart-hours · chart-score · chart-lost", "12_opportunity_funnel.sql · 13_opportunities.sql", "S5"],
+    ["R-08", "US-08", "ریسک و انطباق", "chart-late30 · chart-inflation · chart-overdue · chart-loss", "05_installments_monthly.sql · 06_overdue_by_project.sql · 14_price_index.sql", "S1"],
+    ["R-09", "US-09", "ریسک و انطباق", "chart-einvoice · chart-einvoice-trend", "10_einvoice_lag.sql", "S4"],
+    ["R-10", "US-10", "اتاق تصمیم", "dr-total · dr-bars · memo", "model.js · همهٔ کوئری‌ها", "همهٔ یافته‌ها"],
+    ["R-11", "غیرکارکردی", "ریسک و انطباق", "chart-quality", "15_data_quality.sql", "—"],
+  ];
+  document.getElementById("trace-table").innerHTML = "<thead><tr><th>نیازمندی</th><th>داستان</th><th>صفحه</th><th>نمودارها</th><th>کوئری SQL</th><th>یافته</th></tr></thead><tbody>" +
+    TRACE.map((t) => `<tr><td><b>${t[0]}</b></td><td>${t[1]}</td><td>${t[2]}</td><td>${t[3].split(" · ").map((x) => `<code>${x}</code>`).join(" ")}</td><td>${t[4].split(" · ").map((x) => (/sql|js/.test(x) ? `<code>${x}</code>` : x)).join(" ")}</td><td>${t[5]}</td></tr>`).join("") + "</tbody>";
+
+  const GROUPS = [
+    ["جدول‌های واقعیت · رویدادها", (k) => k.startsWith("fact_")],
+    ["جدول‌های بُعد", (k) => k.startsWith("dim_")],
+    ["مرجع و کنترل کیفیت", (k) => !k.startsWith("fact_") && !k.startsWith("dim_")],
+  ];
+  fetch("../data/dashboard.json").then((r) => r.json()).then((d) => {
+    const rc = d.meta.row_counts;
+    document.getElementById("data-sub").textContent = `طرح ستاره‌ای در SQLite: ${fa(d.meta.total_rows)} ردیف در ${fa(Object.keys(rc).length)} جدول، ${fa(Object.keys(d.marts).length)} کوئری تحلیلی. ردیف‌ها از روی فایل دادهٔ داشبورد شمرده می‌شوند.`;
+    document.getElementById("model").innerHTML = GROUPS.map(([title, f]) => `<div class="box"><b>${title}</b><ul>${Object.keys(rc).filter(f).sort((a, b) => rc[b] - rc[a]).map((k) => `<li><code>${k}</code><span>${fa(rc[k])}</span></li>`).join("")}</ul></div>`).join("");
+  }).catch(() => {});
+})();
+</script>
+</body>
+</html>

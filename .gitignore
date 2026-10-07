@@ -1,0 +1,10 @@
+# The SQLite database is 120 MB, over GitHub's file limit.
+# It is rebuilt with the same rows from seed 1404: python scripts/generate_data.py
+db/*.sqlite
+db/*.sqlite-*
+__pycache__/
+*.pyc
+# Personal interview preparation, not part of the published site
+STUDY-GUIDE.md
+.DS_Store
+Thumbs.db
